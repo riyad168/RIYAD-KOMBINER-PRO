@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Quotex Signals Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <style>
+    .premium-rgb-border {
+      position: relative;
+      border-radius: 12px;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .premium-rgb-border::before {
+      content: "";
+      position: absolute;
+      top: -3px; left: -3px; right: -3px; bottom: -3px;
+      border-radius: 16px;
+      background: linear-gradient(270deg,
+        #ff0000, #ff7f00, #ffff00,
+        #00ff00, #0000ff, #4b0082, #8f00ff, #ff0000);
+      background-size: 1400% 1400%;
+      animation: premium-rgb-anim 10s linear infinite;
+      z-index: -1;
+      filter: drop-shadow(0 0 6px rgba(255,255,255,0.3));
+    }
+    .premium-rgb-border::after {
+      content: "";
+      position: absolute;
+      top: 4px; left: 4px; right: 4px; bottom: 4px;
+      border-radius: 10px;
+      background-color: #1c1f27;
+      z-index: -1;
+    }
+    @keyframes premium-rgb-anim {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .toggle-checkbox:checked + .toggle-label { background-color: #10b981; }
+    .toggle-checkbox:checked + .toggle-label .dot { transform: translateX(100%); }
+    .toggle-label { transition: background-color 0.3s ease; }
+    .dot { transition: transform 0.3s ease; }
+    .signal-box {
+      background: linear-gradient(135deg, #2a2e37, #1c1f27);
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      border-radius: 12px;
+    }
+    .signal-left p:first-child { font-weight: 700; font-size: 1.25rem; margin: 0; }
+    .signal-left p:last-child { font-size: 0.9rem; color: #a0aec0; margin: 4px 0 0; }
+    .live-badge { font-size: 0.75rem; padding: 6px 10px; border-radius: 8px; font-weight: 600; }
+    .live-call { background-color: #16a34a; color: white; }
+    .live-put  { background-color: #dc2626; color: white; }
+
+    /* RGB gradient text for dropdown options */
+    #marketDropdown option {
+      background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: bold;
+    }
+
+    /* For Firefox */
+    #marketDropdown option::-moz-focus-inner {
+      border: 0;
+    }
+
+    /* Dropdown container styling */
+    #marketDropdown {
+      background-color: transparent;
+      color: white;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white font-sans min-h-screen flex flex-col items-center justify-center p-6">
+
+  <!-- Login Screen -->
+  <div id="loginScreen" class="bg-gray-800 p-8 rounded-2xl shadow-lg w-full max-w-sm animate__fadeIn">
+    <h2 class="text-2xl font-bold mb-4 text-center animate__fadeInDown">🔐 Enter Access Password</h2>
+    <input id="passwordInput" type="password" placeholder="Enter password..." class="w-full p-3 rounded bg-gray-700 text-white mb-4 outline-none animate__fadeInUp"/>
+    <button onclick="checkPassword()" class="premium-rgb-border w-full bg-gray-900 hover:bg-gray-800 py-2 rounded font-semibold animate__pulse animate__infinite">🔓 Login</button>
+    <p id="loginError" class="text-red-500 mt-3 hidden text-center">❌ Incorrect password</p>
+  </div>
+
+  <!-- Main App Screen -->
+  <div id="appScreen" class="hidden flex flex-col items-center w-full max-w-xl">
+
+    <h1 class="text-3xl font-bold mb-6 mt-4 animate__fadeInDown">📡 Quotex Signals Generator</h1>
+
+    <div class="bg-gray-800 rounded-2xl shadow-xl p-6 w-full animate__fadeIn">
+
+      <div class="flex justify-between mb-4">
+        <button id="startBtn" class="premium-rgb-border bg-gray-900 hover:bg-gray-800 text-white py-2 px-4 rounded-xl animate__pulse animate__infinite">▶️ START</button>
+        <button id="stopBtn" class="premium-rgb-border bg-gray-900 hover:bg-gray-800 text-white py-2 px-4 rounded-xl animate__pulse animate__infinite">⏹️ STOP </button>
+      </div>
+
+      <div class="flex items-center justify-between mb-6">
+        <label for="otcToggle" class="text-lg">💹 OTC Mode</label>
+        <input id="otcToggle" type="checkbox" class="toggle-checkbox hidden"/>
+        <label for="otcToggle" class="toggle-label block w-14 h-8 rounded-full bg-gray-600 relative cursor-pointer">
+          <span class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full"></span>
+        </label>
+      </div>
+
+      <div class="mb-6">
+        <h2 class="text-lg font-semibold mb-2 animate__fadeIn">📊 Select Market</h2>
+        <div class="premium-rgb-border relative">
+          <select id="marketDropdown" class="w-full p-3 rounded bg-transparent text-white appearance-none outline-none pr-10 z-10"></select>
+          <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <h2 class="text-lg font-semibold mb-2 animate__fadeIn">🕒 Select Timeframe</h2>
+        <div class="premium-rgb-border relative">
+          <select id="timeframeSelect" class="w-full p-3 rounded bg-transparent text-white appearance-none outline-none pr-10 z-10">
+            <option value="M1">M1</option>
+            <option value="M3">M3</option>
+            <option value="M5">M5</option>
+            <option value="M15">M15</option>
+            <option value="M30">M30</option>
+            <option value="H1">H1</option>
+          </select>
+          <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+
+      <div id="signalList" class="space-y-4 mb-6"></div>
+
+      <!-- Bot Token + Chat ID Input UI -->
+      <div class="w-full bg-gray-800 rounded-xl p-4 mb-6">
+        <h2 class="text-lg font-semibold mb-2">⚙️ Telegram Settings</h2>
+        <input id="botToken" type="text" placeholder="🤖 Bot Token" class="w-full p-2 mb-2 rounded bg-gray-700 text-white outline-none" />
+        <input id="chatId" type="text" placeholder="🆔 Chat ID" class="w-full p-2 rounded bg-gray-700 text-white outline-none" />
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  const correctPassword = "123456";
+
+  function checkPassword() {
+    const input = document.getElementById("passwordInput").value;
+    if (input === correctPassword) {
+      document.getElementById("loginScreen").classList.add("hidden");
+      document.getElementById("appScreen").classList.remove("hidden");
+    } else {
+      const error = document.getElementById("loginError");
+      error.classList.remove("hidden");
+      setTimeout(() => error.classList.add("hidden"), 3000);
+    }
+  }
+
+  const realMarketOptions = ["EURUSD","GBPUSD","USDJPY"];
+  const otcMarketOptions  = ["USD/MXN-otc","USD/PHP-otc","USD/INR-otc","NZD/CHF-otc","UKBrent-otc","CAC 40","FTSE 100"];
+  const otcToggle = document.getElementById("otcToggle");
+
+  function updateMarketDropdown() {
+    const sel = document.getElementById("marketDropdown");
+    sel.innerHTML = "";
+    (otcToggle.checked ? otcMarketOptions : realMarketOptions)
+      .forEach(m => {
+        const o = document.createElement("option");
+        o.value = m; o.textContent = m;
+        sel.appendChild(o);
+      });
+  }
+  otcToggle.addEventListener("change", updateMarketDropdown);
+  updateMarketDropdown();
+
+  function getSelectedMarkets() {
+    return [ document.getElementById("marketDropdown").value ];
+  }
+
+  function getSelectedTimeframe() {
+    return document.getElementById("timeframeSelect").value;
+  }
+
+  function getTimePlusDelay(d=2){
+    const now=new Date(); now.setMinutes(now.getMinutes()+d);
+    return now.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit",hour12:true});
+  }
+
+  let signalInterval = null;
+
+  function sendToTelegram(message) {
+    const token = document.getElementById("botToken").value.trim();
+    const chatId = document.getElementById("chatId").value.trim();
+    if (!token || !chatId) return;
+
+    const url = `https://api.telegram.org/bot${token}/sendMessage`;
+    const data = {
+      chat_id: chatId,
+      text: message,
+      parse_mode: "HTML"
+    };
+
+    fetch(url, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(json => {
+      if (!json.ok) console.error("Telegram Error:", json.description);
+    })
+    .catch(err => console.error("Fetch Error:", err));
+  }
+
+  function createSignal() {
+    const pairs = getSelectedMarkets();
+    if (!pairs.length) return;
+    const type = Math.random() > 0.5 ? "CALL" : "PUT";
+    const pair = pairs[Math.floor(Math.random() * pairs.length)];
+    const tradeTime = getTimePlusDelay(2);
+    const tf = getSelectedTimeframe();
+    const div = document.createElement("div");
+    div.className = "premium-rgb-border signal-box animate__fadeInUp";
+    div.innerHTML = `
+      <div class="signal-left animate__fadeInLeft">
+        <p>${type === "CALL" ? "🟢 CALL" : "🔴 PUT"}</p>
+        <p>${pair} - ${tradeTime} - ${tf}</p>
+      </div>
+      <span class="live-badge ${type === "CALL" ? "live-call" : "live-put"}">LIVE</span>
+    `;
+    const list = document.getElementById("signalList");
+    list.prepend(div);
+    if (list.children.length > 8) list.removeChild(list.lastChild);
+
+    // Send signal to Telegram
+ // Send signal to Telegram
+const signalText = `
+<b>========== 𝚂𝙸𝙶𝙽𝙰𝙻 ===========</b>
+
+╭━━━━━━━━ ・ ━━━━━━━━╮
+🐲 <b>𝙰𝚌𝚝𝚒𝚟𝚎 𝙿𝚊𝚒𝚛</b> -» ${pair}
+🕓 <b>𝚃𝚒𝚖𝚎𝚝𝚊𝚋𝚕𝚎</b> -» ${tradeTime}
+⏳ <b>𝙴𝚡𝚙𝚒𝚛𝚊𝚝𝚒𝚘𝚗</b> -» ${tf}
+${type === "CALL" ? "🟢 <b>CALL</b>    𝙳𝚒𝚛𝚎𝚌𝚝𝚒𝚘𝚗" : "🔴 <b>PUT</b>    𝙳𝚒𝚛𝚎𝚌𝚝𝚒𝚘𝚗"}
+╰━━━━━━━━ ・ ━━━━━━━━╯
+🌐 <b>𝙲𝚑𝚎𝚌𝚔 𝙲𝚘𝚗𝚝𝚊𝚌𝚝</b> -» @riyad_khan01
+
+📳 <b>𝐒𝐈𝐆𝐍𝐀𝐋 𝐒𝐄𝐍𝐓 𝐒𝐔𝐂𝐂𝐄𝐒𝐒𝐅𝐔𝐋𝐋𝐘</b>
+`;
+
+sendToTelegram(signalText);
+
+  }
+
+  document.getElementById("startBtn").addEventListener("click", () => {
+    if (signalInterval) return;
+    createSignal(); // immediate
+    signalInterval = setInterval(createSignal, 300000);
+  });
+  document.getElementById("stopBtn").addEventListener("click", () => {
+    clearInterval(signalInterval);
+    signalInterval = null;
+  });
+
+</script>
+
+</body>
+</html>
