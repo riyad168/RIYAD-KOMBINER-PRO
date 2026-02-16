@@ -1,62 +1,2410 @@
-<!doctype html>
-<html lang=en>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset=UTF-8>
-<title>Quotex Signals Generator</title>
-<script src=https://cdn.tailwindcss.com></script>
-<link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css>
-<style>.premium-rgb-border{position:relative;border-radius:12px;z-index:0;overflow:hidden}.premium-rgb-border::before{content:"";position:absolute;top:-3px;left:-3px;right:-3px;bottom:-3px;border-radius:16px;background:linear-gradient(270deg,red,#ff7f00,#ff0,#0f0,#00f,indigo,#8f00ff,red);background-size:1400% 1400%;animation:premium-rgb-anim 10s linear infinite;z-index:-1;filter:drop-shadow(0 0 6px rgba(255,255,255,.3))}.premium-rgb-border::after{content:"";position:absolute;top:4px;left:4px;right:4px;bottom:4px;border-radius:10px;background-color:#1c1f27;z-index:-1}@keyframes premium-rgb-anim{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}.toggle-checkbox:checked+.toggle-label{background-color:#10b981}.toggle-checkbox:checked+.toggle-label .dot{transform:translateX(100%)}.toggle-label{transition:background-color .3s ease}.dot{transition:transform .3s ease}.signal-box{background:linear-gradient(135deg,#2a2e37,#1c1f27);padding:16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 10px rgba(0,0,0,.5);border-radius:12px}.signal-left p:first-child{font-weight:700;font-size:1.25rem;margin:0}.signal-left p:last-child{font-size:.9rem;color:#a0aec0;margin:4px 0 0}.live-badge{font-size:.75rem;padding:6px 10px;border-radius:8px;font-weight:600}.live-call{background-color:#16a34a;color:#fff}.live-put{background-color:#dc2626;color:#fff}#marketDropdown option{background:linear-gradient(90deg,red,orange,#ff0,green,#00f,indigo,violet);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}#marketDropdown option::-moz-focus-inner{border:0}#marketDropdown{background-color:transparent;color:#fff;font-weight:700}</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Quotex Pro - Mobile Trading</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f4c75 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #e2e8f0;
+        }
+
+        /* NOTIFICATION */
+        .notification {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            left: 10px;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.9) 0%, rgba(22, 163, 74, 0.9) 100%);
+            border: 1px solid rgba(34, 197, 94, 0.5);
+            color: #dcfce7;
+            padding: 12px 16px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.2);
+            z-index: 2000;
+            animation: slideInRight 0.5s ease;
+            font-weight: 600;
+            font-size: 13px;
+            max-width: calc(100% - 20px);
+            word-wrap: break-word;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* LOGIN PAGE */
+        .login-section {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 16px;
+            padding: 30px 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            margin: auto;
+            max-width: 100%;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-section.hidden {
+            display: none !important;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .logo-text h1 {
+            color: #38bdf8;
+            font-size: 28px;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .logo-text p {
+            color: #94a3b8;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid rgba(148, 163, 184, 0.2);
+            border-radius: 10px;
+            background: rgba(71, 85, 105, 0.1);
+            font-size: 14px;
+            color: #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #38bdf8;
+            background: rgba(71, 85, 105, 0.2);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #38bdf8 0%, #06b6d4 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+
+        .btn-login:active { transform: scale(0.98); }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #fca5a5;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            display: none;
+            font-size: 12px;
+        }
+
+        .error-message.show { display: block; }
+
+        .demo-info {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: #7dd3fc;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            font-size: 11px;
+        }
+
+        .demo-info strong {
+            display: block;
+            margin-bottom: 6px;
+            color: #38bdf8;
+        }
+
+        /* SETUP WIZARD */
+        .setup-wizard {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            padding-bottom: 150px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            max-width: 100%;
+            width: 100%;
+            display: none;
+            margin: 10px auto;
+            max-height: 100vh;
+            overflow-y: auto;
+        }
+
+        .setup-wizard.active { display: block; }
+
+        .setup-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .setup-header h2 {
+            color: #e2e8f0;
+            font-size: 20px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .setup-header p {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .setup-section {
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .setup-section:last-of-type { border-bottom: none; }
+
+        .setup-section h3 {
+            color: #e2e8f0;
+            font-size: 13px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #38bdf8 0%, #06b6d4 100%);
+            color: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .form-group-setup {
+            margin-bottom: 12px;
+        }
+
+        .form-group-setup label {
+            display: block;
+            margin-bottom: 6px;
+            color: #cbd5e1;
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        .form-group-setup input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid rgba(148, 163, 184, 0.2);
+            border-radius: 8px;
+            background: rgba(71, 85, 105, 0.1);
+            font-size: 13px;
+            color: #e2e8f0;
+        }
+
+        .form-group-setup input:focus {
+            outline: none;
+            border-color: #38bdf8;
+            background: rgba(71, 85, 105, 0.2);
+        }
+
+        .info-box {
+            background: rgba(56, 189, 248, 0.1);
+            border-left: 3px solid #38bdf8;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 11px;
+            color: #7dd3fc;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 30px;
+            position: sticky;
+            bottom: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(15, 23, 42, 0.95) 80%);
+            padding: 20px 0;
+            z-index: 50;
+        }
+
+        .btn-secondary {
+            padding: 10px;
+            background: rgba(148, 163, 184, 0.1);
+            color: #cbd5e1;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:active { transform: scale(0.98); }
+
+        .btn-primary {
+            padding: 10px;
+            background: linear-gradient(135deg, #38bdf8 0%, #06b6d4 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:active { transform: scale(0.98); }
+
+        /* DASHBOARD MAIN */
+        .dashboard-section {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            flex-direction: column;
+            overflow-y: auto;
+            padding-bottom: 80px;
+        }
+
+        .dashboard-section.active {
+            display: flex;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.8) 100%);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+
+        .dashboard-section.show-dashboard .sidebar {
+            display: block;
+        }
+
+        .user-info {
+            text-align: center;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .user-info h2 {
+            color: #e2e8f0;
+            font-size: 14px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .user-info p {
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+        .balance-box {
+            background: linear-gradient(135deg, #38bdf8 0%, #06b6d4 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.2);
+        }
+
+        .balance-box h3 {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .balance-box .amount {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .status-box {
+            background: rgba(71, 85, 105, 0.1);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .status-label {
+            color: #94a3b8;
+            margin-bottom: 4px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .status-value {
+            color: #38bdf8;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .stat-card {
+            background: rgba(71, 85, 105, 0.1);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 10px;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            color: #38bdf8;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .pnl-card {
+            width: 100%;
+            background: rgba(34, 197, 94, 0.1);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .pnl-card.negative {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .pnl-label {
+            color: #94a3b8;
+            font-size: 10px;
+            margin-bottom: 3px;
+        }
+
+        .pnl-value {
+            color: #22c55e;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .pnl-card.negative .pnl-value {
+            color: #ef4444;
+        }
+
+        .btn-admin {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+        }
+
+        .btn-admin:active { transform: scale(0.98); }
+
+        .btn-logout {
+            width: 100%;
+            padding: 10px;
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:active { transform: scale(0.98); }
+
+        /* MAIN CONTENT - TRADE SECTION */
+        .main-content {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.8) 100%);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+
+        .dashboard-section.show-trade .main-content {
+            display: block;
+        }
+
+        .dashboard-section.show-history .main-content {
+            display: block;
+        }
+
+        .main-content h2 {
+            color: #e2e8f0;
+            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .signal-card {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(6, 182, 212, 0.15) 100%);
+            border: 2px solid rgba(56, 189, 248, 0.4);
+            border-radius: 12px;
+            padding: 24px 16px;
+            text-align: center;
+            margin-bottom: 16px;
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-section.show-trade .signal-card {
+            display: block;
+        }
+
+        .signal-card.active { display: block; }
+
+        .signal-header {
+            margin-bottom: 12px;
+        }
+
+        .signal-header h3 {
+            color: #38bdf8;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .signal-strength {
+            display: inline-block;
+            background: linear-gradient(135deg, #38bdf8 0%, #06b6d4 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .signal-display {
+            font-size: 48px;
+            font-weight: 900;
+            margin: 16px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .signal-display.buy {
+            color: #22c55e;
+            text-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+        }
+
+        .signal-display.sell {
+            color: #ef4444;
+            text-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        }
+
+        .market-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(234, 179, 8, 0.2) 100%);
+            color: #fef08a;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            margin: 10px 0;
+            border: 1px solid rgba(251, 191, 36, 0.4);
+        }
+
+        .signal-info {
+            background: rgba(71, 85, 105, 0.15);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            font-size: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.15);
+        }
+
+        .signal-info p {
+            margin: 8px 0;
+            color: #cbd5e1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .entry-time {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(234, 179, 8, 0.15) 100%);
+            border: 2px solid rgba(251, 191, 36, 0.4);
+            color: #fef08a;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-align: center;
+            margin: 12px 0;
+            font-size: 12px;
+        }
+
+        .btn-generate {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #38bdf8 0%, #06b6d4 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 12px;
+        }
+
+        .dashboard-section.show-trade .btn-generate {
+            display: block;
+        }
+
+        .dashboard-section.show-history .btn-generate {
+            display: none;
+        }
+
+        .btn-generate:active:not(:disabled) { transform: scale(0.98); }
+        .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* HISTORY SECTION */
+        .trades-history {
+            margin-top: 16px;
+            display: none;
+        }
+
+        .dashboard-section.show-history .trades-history {
+            display: block;
+        }
+
+        .trades-history h3 {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+            color: #e2e8f0;
+        }
+
+        .btn-toggle-history {
+            padding: 8px 12px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 11px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .btn-toggle-history:active { transform: scale(0.98); }
+
+        .trades-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .trades-table thead {
+            background: rgba(71, 85, 105, 0.1);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .trades-table th {
+            padding: 8px 6px;
+            text-align: left;
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+
+        .trades-table td {
+            padding: 8px 6px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.05);
+            color: #cbd5e1;
+        }
+
+        .no-trades-message {
+            text-align: center;
+            color: #94a3b8;
+            padding: 30px 20px;
+            font-size: 12px;
+        }
+
+        /* ADMIN LOGIN MODAL */
+        .admin-login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .admin-login-modal.active {
+            display: flex;
+        }
+
+        .admin-login-content {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%);
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            border-radius: 16px;
+            padding: 30px 20px;
+            max-width: 100%;
+            width: 100%;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+            animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .admin-login-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .admin-login-header h2 {
+            color: #f59e0b;
+            font-size: 20px;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .admin-login-header p {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .admin-form-group {
+            margin-bottom: 12px;
+        }
+
+        .admin-form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #cbd5e1;
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        .admin-form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid rgba(245, 158, 11, 0.2);
+            border-radius: 8px;
+            background: rgba(71, 85, 105, 0.1);
+            font-size: 13px;
+            color: #e2e8f0;
+        }
+
+        .admin-form-group input:focus {
+            outline: none;
+            border-color: #f59e0b;
+            background: rgba(71, 85, 105, 0.2);
+        }
+
+        .admin-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #fca5a5;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: none;
+            font-size: 11px;
+        }
+
+        .admin-error.show { display: block; }
+
+        .admin-info-box {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: #7dd3fc;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 11px;
+        }
+
+        .admin-info-box strong {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .btn-admin-login {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+        }
+
+        .btn-admin-login:active { transform: scale(0.98); }
+
+        .btn-cancel {
+            width: 100%;
+            padding: 10px;
+            background: rgba(148, 163, 184, 0.1);
+            color: #cbd5e1;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-cancel:active { transform: scale(0.98); }
+
+        /* ADMIN PANEL MODAL */
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 2500;
+            justify-content: flex-end;
+        }
+
+        .admin-modal.active { display: flex; }
+
+        .admin-content {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%);
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            width: 100%;
+            max-width: 100%;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 20px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .admin-header h2 {
+            color: #f59e0b;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .admin-close {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .admin-close:active { transform: scale(0.95); }
+
+        .admin-section {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: rgba(71, 85, 105, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 12px;
+        }
+
+        .admin-section h3 {
+            color: #f59e0b;
+            font-size: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-control {
+            margin-bottom: 12px;
+        }
+
+        .admin-control label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .toggle-switch {
+            width: 48px;
+            height: 24px;
+            background: rgba(148, 163, 184, 0.2);
+            border: 2px solid rgba(148, 163, 184, 0.3);
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: rgba(34, 197, 94, 0.3);
+            border-color: #22c55e;
+        }
+
+        .toggle-switch-inner {
+            width: 18px;
+            height: 18px;
+            background: #cbd5e1;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active .toggle-switch-inner {
+            left: 22px;
+            background: #22c55e;
+        }
+
+        .admin-input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .admin-input {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-input label {
+            color: #cbd5e1;
+            font-size: 11px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .admin-input input {
+            padding: 8px 10px;
+            background: rgba(71, 85, 105, 0.2);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 6px;
+            color: #e2e8f0;
+            font-size: 12px;
+        }
+
+        .admin-input input:focus {
+            outline: none;
+            border-color: #f59e0b;
+        }
+
+        .admin-button {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .admin-button:active { transform: scale(0.98); }
+
+        .status-display {
+            background: rgba(71, 85, 105, 0.15);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0 0 0;
+            border-left: 3px solid #f59e0b;
+        }
+
+        .status-display p {
+            color: #cbd5e1;
+            margin: 6px 0;
+            font-size: 11px;
+        }
+
+        .status-display strong {
+            color: #f59e0b;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid rgba(245, 158, 11, 0.2);
+            overflow-x: auto;
+        }
+
+        .admin-tab {
+            padding: 10px 16px;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .admin-tab.active {
+            color: #f59e0b;
+            border-bottom-color: #f59e0b;
+        }
+
+        .admin-tab-content {
+            display: none;
+        }
+
+        .admin-tab-content.active { display: block; }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-box {
+            background: rgba(71, 85, 105, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            text-align: center;
+        }
+
+        .stat-box-label {
+            color: #94a3b8;
+            font-size: 10px;
+            margin-bottom: 6px;
+        }
+
+        .stat-box-value {
+            color: #f59e0b;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .danger-zone {
+            background: rgba(239, 68, 68, 0.05);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .danger-zone h4 {
+            color: #ef4444;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .danger-button {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            margin-top: 8px !important;
+        }
+
+        /* RESULT MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%);
+            border: 2px solid rgba(148, 163, 184, 0.15);
+            border-radius: 16px;
+            padding: 30px 20px;
+            max-width: 100%;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+            animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-content h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: #e2e8f0;
+            font-weight: 700;
+        }
+
+        .result-display {
+            font-size: 64px;
+            font-weight: 900;
+            margin: 20px 0;
+            text-transform: uppercase;
+        }
+
+        .result-display.win {
+            color: #22c55e;
+            text-shadow: 0 0 30px rgba(34, 197, 94, 0.5);
+        }
+
+        .result-display.loss {
+            color: #ef4444;
+            text-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+        }
+
+        .result-info {
+            background: rgba(71, 85, 105, 0.15);
+            padding: 16px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+            font-size: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.15);
+        }
+
+        .result-info p {
+            margin: 8px 0;
+            color: #cbd5e1;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .result-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .result-buttons button {
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .btn-win {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+        }
+
+        .btn-win:active { transform: scale(0.98); }
+
+        .btn-loss {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-loss:active { transform: scale(0.98); }
+
+        .countdown {
+            font-size: 14px;
+            color: #38bdf8;
+            font-weight: 700;
+            margin: 12px 0;
+        }
+
+        /* MOBILE NAVIGATION */
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
+            border-top: 1px solid rgba(148, 163, 184, 0.1);
+            display: flex;
+            gap: 0;
+            padding: 8px 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 4px;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 11px;
+            border: none;
+            background: none;
+            transition: all 0.3s ease;
+            gap: 4px;
+        }
+
+        .nav-item.active {
+            color: #38bdf8;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            body { padding: 0; }
+            .login-section { border-radius: 0; padding: 20px; }
+            .setup-wizard { border-radius: 0; margin: 0; padding: 20px; padding-bottom: 150px; }
+            .sidebar { margin: 0; border-radius: 0; }
+            .main-content { margin: 0; border-radius: 0; }
+            .button-group { grid-template-columns: 1fr; padding: 20px; margin: 0; }
+            .admin-login-content { border-radius: 16px; margin: 10px; }
+            .admin-content { border-radius: 16px 16px 0 0; }
+            .modal-content { border-radius: 16px; margin: 10px; }
+            .stat-grid { grid-template-columns: 1fr; }
+            .admin-input-group { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
-<body class="bg-gray-900 text-white font-sans min-h-screen flex flex-col items-center justify-center p-6">
-<div id=loginScreen class="bg-gray-800 p-8 rounded-2xl shadow-lg w-full max-w-sm animate__fadeIn">
-<h2 class="text-2xl font-bold mb-4 text-center animate__fadeInDown">🔐 Enter Access Password</h2>
-<input id=passwordInput type=password placeholder="Enter password..." class="w-full p-3 rounded bg-gray-700 text-white mb-4 outline-none animate__fadeInUp">
-<button onclick=checkPassword() class="premium-rgb-border w-full bg-gray-900 hover:bg-gray-800 py-2 rounded font-semibold animate__pulse animate__infinite">🔓 Login</button>
-<p id=loginError class="text-red-500 mt-3 hidden text-center">❌ Incorrect password</p>
-</div>
-<div id=appScreen class="hidden flex flex-col items-center w-full max-w-xl">
-<h1 class="text-3xl font-bold mb-6 mt-4 animate__fadeInDown">📡 Quotex Signals Generator</h1>
-<div class="bg-gray-800 rounded-2xl shadow-xl p-6 w-full animate__fadeIn">
-<div class="flex justify-between mb-4">
-<button id=startBtn class="premium-rgb-border bg-gray-900 hover:bg-gray-800 text-white py-2 px-4 rounded-xl animate__pulse animate__infinite">▶️ START</button>
-<button id=stopBtn class="premium-rgb-border bg-gray-900 hover:bg-gray-800 text-white py-2 px-4 rounded-xl animate__pulse animate__infinite">⏹️ STOP </button>
-</div>
-<div class="flex items-center justify-between mb-6">
-<label for=otcToggle class=text-lg>💹 OTC Mode</label>
-<input id=otcToggle type=checkbox class="toggle-checkbox hidden">
-<label for=otcToggle class="toggle-label block w-14 h-8 rounded-full bg-gray-600 relative cursor-pointer">
-<span class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full"></span>
-</label>
-</div>
-<div class=mb-6>
-<h2 class="text-lg font-semibold mb-2 animate__fadeIn">📊 Select Market</h2>
-<div class="premium-rgb-border relative">
-<select id=marketDropdown class="w-full p-3 rounded bg-transparent text-white appearance-none outline-none pr-10 z-10"></select>
-<svg class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" width=20 height=20 fill=none stroke=currentColor stroke-width=2 viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-</div>
-</div>
-<div class=mb-6>
-<h2 class="text-lg font-semibold mb-2 animate__fadeIn">🕒 Select Timeframe</h2>
-<div class="premium-rgb-border relative">
-<select id=timeframeSelect class="w-full p-3 rounded bg-transparent text-white appearance-none outline-none pr-10 z-10">
-<option value=M1>M1</option>
-<option value=M3>M3</option>
-<option value=M5>M5</option>
-<option value=M15>M15</option>
-<option value=M30>M30</option>
-<option value=H1>H1</option>
-</select>
-<svg class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" width=20 height=20 fill=none stroke=currentColor stroke-width=2 viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-</div>
-</div>
-<div id=signalList class="space-y-4 mb-6"></div>
-<div class="w-full bg-gray-800 rounded-xl p-4 mb-6">
-<h2 class="text-lg font-semibold mb-2">⚙️ Telegram Settings</h2>
-<input id=botToken placeholder="🤖 Bot Token" class="w-full p-2 mb-2 rounded bg-gray-700 text-white outline-none">
-<input id=chatId placeholder="🆔 Chat ID" class="w-full p-2 rounded bg-gray-700 text-white outline-none">
-</div>
-</div>
-</div>
-<script>const correctPassword="123456";function checkPassword(){if("123456"===document.getElementById("passwordInput").value)document.getElementById("loginScreen").classList.add("hidden"),document.getElementById("appScreen").classList.remove("hidden");else{const e=document.getElementById("loginError");e.classList.remove("hidden"),setTimeout((()=>e.classList.add("hidden")),3e3)}}const realMarketOptions=["EURUSD","GBPUSD","USDJPY"],otcMarketOptions=["USD/MXN-otc","USD/PHP-otc","USD/PKR-otc","USD/BDT-otc","USD/PHP-otc","USD/NGN-otc","USD/EGP-otc","USD/TRY-otc","USD/ARS-otc","USD/COP-otc","CAD/CHF-otc","USD/INR-otc","NZD/CHF-otc","UKBrent-otc","CAC 40","FTSE 100"],otcToggle=document.getElementById("otcToggle");function updateMarketDropdown(){const e=document.getElementById("marketDropdown");e.innerHTML="",(otcToggle.checked?otcMarketOptions:realMarketOptions).forEach((t=>{const n=document.createElement("option");n.value=t,n.textContent=t,e.appendChild(n)}))}function getSelectedMarkets(){return[document.getElementById("marketDropdown").value]}function getSelectedTimeframe(){return document.getElementById("timeframeSelect").value}function getTimePlusDelay(e=2){const t=new Date;return t.setMinutes(t.getMinutes()+e),t.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",hour12:!0})}otcToggle.addEventListener("change",updateMarketDropdown),updateMarketDropdown();let signalInterval=null;function sendToTelegram(e){const t=document.getElementById("botToken").value.trim(),n=document.getElementById("chatId").value.trim();if(!t||!n)return;const o={chat_id:n,text:e,parse_mode:"HTML"};fetch(`https://api.telegram.org/bot${t}/sendMessage`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(o)}).then((e=>e.json())).then((e=>{e.ok||console.error("Telegram Error:",e.description)})).catch((e=>console.error("Fetch Error:",e)))}function createSignal(){const e=getSelectedMarkets();if(!e.length)return;const t=Math.random()>.5?"CALL":"PUT",n=e[Math.floor(Math.random()*e.length)],o=getTimePlusDelay(2),a=getSelectedTimeframe(),r=document.createElement("div");r.className="premium-rgb-border signal-box animate__fadeInUp",r.innerHTML=`\n      <div class="signal-left animate__fadeInLeft">\n        <p>${"CALL"===t?"🟢 CALL":"🔴 PUT"}</p>\n        <p>${n} - ${o} - ${a}</p>\n      </div>\n      <span class="live-badge ${"CALL"===t?"live-call":"live-put"}">LIVE</span>\n    `;const c=document.getElementById("signalList");c.prepend(r),c.children.length>8&&c.removeChild(c.lastChild);sendToTelegram(`\n<b>========== 𝚂𝙸𝙶𝙽𝙰𝙻 ===========</b>\n\n╭━━━━━━━━ ・ ━━━━━━━━╮\n🐲 <b>𝙰𝚌𝚝𝚒𝚟𝚎 𝙿𝚊𝚒𝚛</b> -» ${n}\n🕓 <b>𝚃𝚒𝚖𝚎𝚝𝚊𝚋𝚕𝚎</b> -» ${o}\n⏳ <b>𝙴𝚡𝚙𝚒𝚛𝚊𝚝𝚒𝚘𝚗</b> -» ${a}\n${"CALL"===t?"🟢 <b>CALL</b>    𝙳𝚒𝚛𝚎𝚌𝚝𝚒𝚘𝚗":"🔴 <b>PUT</b>    𝙳𝚒𝚛𝚎𝚌𝚝𝚒𝚘𝚗"}\n╰━━━━━━━━ ・ ━━━━━━━━╯\n🌐 <b>𝙲𝚑𝚎𝚌𝚔 𝙲𝚘𝚗𝚝𝚊𝚌𝚝</b> -» @riyad_khan01\n\n📳 <b>𝐒𝐈𝐆𝐍𝐀𝐋 𝐒𝐄𝐍𝐓 𝐒𝐔𝐂𝐂𝐄𝐒𝐒𝐅𝐔𝐋𝐋𝐘</b>\n`)}document.getElementById("startBtn").addEventListener("click",(()=>{signalInterval||(createSignal(),signalInterval=setInterval(createSignal,3e5))})),document.getElementById("stopBtn").addEventListener("click",(()=>{clearInterval(signalInterval),signalInterval=null}))</script>
+<body>
+    <!-- LOGIN PAGE -->
+    <div class="login-section" id="loginSection">
+        <div class="logo-container">
+            <div class="logo">📈</div>
+            <div class="logo-text">
+                <h1>Quotex Pro</h1>
+                <p>MOBILE TRADING</p>
+            </div>
+        </div>
+
+        <div class="demo-info">
+            <strong>📌 Demo Credentials:</strong>
+            demo@quotex.com<br>
+            Demo@123
+        </div>
+
+        <div id="loginError" class="error-message"></div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">📧 Email</label>
+                <input type="email" id="email" placeholder="demo@quotex.com" value="demo@quotex.com">
+            </div>
+            <div class="form-group">
+                <label for="password">🔐 Password</label>
+                <input type="password" id="password" placeholder="Demo@123" value="Demo@123">
+            </div>
+            <button type="button" class="btn-login" onclick="handleLogin()">Sign In</button>
+        </form>
+    </div>
+
+    <!-- SETUP WIZARD -->
+    <div class="setup-wizard" id="setupWizard">
+        <div class="setup-header">
+            <h2>💼 Setup Trading</h2>
+            <p>Configure your account</p>
+        </div>
+
+        <div class="setup-section">
+            <h3><span class="section-icon">1</span> Balance</h3>
+            <div class="form-group-setup">
+                <label>Account Balance ($)</label>
+                <input type="number" id="initialBalance" value="10000" min="100">
+            </div>
+            <div class="info-box">ℹ️ Your starting capital</div>
+        </div>
+
+        <div class="setup-section">
+            <h3><span class="section-icon">2</span> Risk</h3>
+            <div class="form-row">
+                <div class="form-group-setup">
+                    <label>Risk Per Trade (%)</label>
+                    <input type="number" id="riskPercent" value="2" min="0.1" max="10" step="0.1">
+                </div>
+                <div class="form-group-setup">
+                    <label>Multiplier (x)</label>
+                    <input type="number" id="tradeMultiplier" value="0.85" min="1" max="50">
+                </div>
+            </div>
+        </div>
+
+        <div class="setup-section">
+            <h3><span class="section-icon">3</span> Rules</h3>
+            
+            <div style="margin-bottom: 12px;">
+                <h4 style="color: #ef4444; font-size: 12px; margin-bottom: 8px;">Loss Block</h4>
+                <div class="form-row">
+                    <div class="form-group-setup">
+                        <label>Threshold (%)</label>
+                        <input type="number" id="lossThreshold" value="20" min="1" max="50">
+                    </div>
+                    <div class="form-group-setup">
+                        <label>Hours</label>
+                        <input type="number" id="lossBlockHours" value="3" min="1" max="12">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h4 style="color: #22c55e; font-size: 12px; margin-bottom: 8px;">Profit Block</h4>
+                <div class="form-row">
+                    <div class="form-group-setup">
+                        <label>Threshold (%)</label>
+                        <input type="number" id="profitThreshold" value="10" min="1" max="50">
+                    </div>
+                    <div class="form-group-setup">
+                        <label>Hours</label>
+                        <input type="number" id="profitBlockHours" value="2" min="1" max="12">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-secondary" type="button" onclick="handleLogout()">Back</button>
+            <button class="btn-primary" type="button" onclick="completeSetup()">Start</button>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="dashboard-section" id="dashboardSection">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="user-info">
+                <h2 id="userName">Welcome</h2>
+                <p id="userEmail"></p>
+            </div>
+
+            <div class="balance-box">
+                <h3>💰 Balance</h3>
+                <div class="amount" id="balanceAmount">$10,000</div>
+            </div>
+
+            <div class="status-box">
+                <div class="status-label">Status</div>
+                <div class="status-value" id="tradingStatus">🟢 ACTIVE</div>
+            </div>
+
+            <div class="status-box">
+                <div class="status-label">Block</div>
+                <div class="status-value" id="blockInfo">None</div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-label">Trades</div>
+                    <div class="stat-value" id="totalTrades">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Win Rate</div>
+                    <div class="stat-value" id="winRate">0%</div>
+                </div>
+            </div>
+
+            <div class="pnl-card" id="pnlCard">
+                <div class="pnl-label">P&L</div>
+                <div class="pnl-value" id="sessionPnL">$0.00</div>
+            </div>
+
+            <button class="btn-admin" onclick="openAdminLogin()">⚙️ Admin</button>
+            <button class="btn-logout" onclick="handleLogout()">🚪 Logout</button>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- TRADE SECTION -->
+            <h2>🎯 Generate Signal</h2>
+
+            <div class="signal-card" id="signalCard">
+                <div class="signal-header">
+                    <h3>📊 Signal</h3>
+                    <div class="signal-strength" id="signalStrength">STRONG</div>
+                </div>
+                <div class="signal-display" id="signalDisplay"></div>
+                <div class="market-badge" id="marketBadge"></div>
+                <div class="entry-time" id="entryTime"></div>
+                <div class="signal-info">
+                    <p><strong>Price:</strong> <span id="entryPrice">-</span></p>
+                    <p><strong>Amount:</strong> <span id="tradeAmount">-</span></p>
+                    <p><strong>Risk:</strong> <span id="riskAmount">-</span></p>
+                </div>
+                <div class="countdown" id="countdown"></div>
+            </div>
+
+            <button class="btn-generate" id="generateBtn" onclick="generateSignal()">🚀 Generate Signal</button>
+
+            <!-- HISTORY SECTION -->
+            <div class="trades-history">
+                <h3>📈 Trade History</h3>
+                <div id="historyContent">
+                    <div class="no-trades-message" id="noTradesMsg">
+                        📊 No trades yet<br>
+                        <span style="font-size: 10px; color: #94a3b8;">Generate a signal to start trading</span>
+                    </div>
+                    <table class="trades-table" id="tradesTable" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Market</th>
+                                <th>Signal</th>
+                                <th>Result</th>
+                                <th>P&L</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tradesBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN LOGIN MODAL -->
+    <div class="admin-login-modal" id="adminLoginModal">
+        <div class="admin-login-content">
+            <div class="admin-login-header">
+                <h2>🔐 Admin Access</h2>
+                <p>Enter your credentials</p>
+            </div>
+
+            <div id="adminLoginError" class="admin-error"></div>
+
+            <div class="admin-info-box">
+                <strong>Credentials:</strong>
+                admin / Admin@123
+            </div>
+
+            <div class="admin-form-group">
+                <label for="adminUsername">Username</label>
+                <input type="text" id="adminUsername" placeholder="admin" value="admin">
+            </div>
+
+            <div class="admin-form-group">
+                <label for="adminPassword">Password</label>
+                <input type="password" id="adminPassword" placeholder="Admin@123" value="Admin@123">
+            </div>
+
+            <button class="btn-admin-login" onclick="verifyAdminCredentials()">Login</button>
+            <button class="btn-cancel" onclick="closeAdminLogin()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div class="admin-modal" id="adminModal">
+        <div class="admin-content">
+            <div class="admin-header">
+                <h2>⚙️ Admin Panel</h2>
+                <button class="admin-close" onclick="closeAdminPanel()">✕</button>
+            </div>
+
+            <!-- TABS -->
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="switchAdminTab('overview')">📊 Overview</button>
+                <button class="admin-tab" onclick="switchAdminTab('controls')">⚡ Controls</button>
+                <button class="admin-tab" onclick="switchAdminTab('settings')">⚙️ Settings</button>
+                <button class="admin-tab" onclick="switchAdminTab('danger')">🔥 Danger</button>
+            </div>
+
+            <!-- OVERVIEW TAB -->
+            <div id="overview" class="admin-tab-content active">
+                <div class="admin-section">
+                    <h3>📈 Session Stats</h3>
+                    <div class="stat-grid">
+                        <div class="stat-box">
+                            <div class="stat-box-label">Total Trades</div>
+                            <div class="stat-box-value" id="adminTotalTrades">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-box-label">Win Rate</div>
+                            <div class="stat-box-value" id="adminWinRate">0%</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-box-label">Session P&L</div>
+                            <div class="stat-box-value" id="adminSessionPnL">$0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-box-label">Balance</div>
+                            <div class="stat-box-value" id="adminBalance">$0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h3>ℹ️ Block Information</h3>
+                    <div class="status-display">
+                        <p><strong>Status:</strong> <span id="blockStatusInfo">✅ Not Blocked</span></p>
+                        <p><strong>Until:</strong> <span id="blockedUntilInfo">-</span></p>
+                        <p><strong>Reason:</strong> <span id="blockReasonInfo">-</span></p>
+                        <p><strong>Time Left:</strong> <span id="timeRemainingInfo">-</span></p>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h3>🎯 Settings</h3>
+                    <div class="status-display">
+                        <p><strong>Risk Per Trade:</strong> <span id="adminRiskPercent">0%</span></p>
+                        <p><strong>Trade Multiplier:</strong> <span id="adminMultiplier">0x</span></p>
+                        <p><strong>Loss Threshold:</strong> <span id="adminLossThreshold">0%</span></p>
+                        <p><strong>Profit Threshold:</strong> <span id="adminProfitThreshold">0%</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTROLS TAB -->
+            <div id="controls" class="admin-tab-content">
+                <div class="admin-section">
+                    <h3>🚫 Block System</h3>
+                    <div class="admin-control">
+                        <label>
+                            <div class="toggle-switch" id="blockSystemToggle" onclick="toggleBlockSystem()">
+                                <div class="toggle-switch-inner"></div>
+                            </div>
+                            <span>Enable/Disable</span>
+                        </label>
+                    </div>
+                    <div class="status-display">
+                        <p><strong>Status:</strong></p>
+                        <p id="blockSystemStatus">🟢 ENABLED</p>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h3>⏱️ Block Times (Minutes)</h3>
+                    <div class="admin-input-group">
+                        <div class="admin-input">
+                            <label>Loss Block</label>
+                            <input type="number" id="lossBlockMinutes" min="1" max="1440" value="180">
+                        </div>
+                        <div class="admin-input">
+                            <label>Profit Block</label>
+                            <input type="number" id="profitBlockMinutes" min="1" max="1440" value="120">
+                        </div>
+                    </div>
+                    <button class="admin-button" onclick="updateBlockTimes()">💾 Update Times</button>
+                </div>
+
+                <div class="admin-section">
+                    <h3>⚡ Quick Actions</h3>
+                    <button class="admin-button" onclick="removeAllBlocks()" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);">
+                        ✓ Remove All Blocks
+                    </button>
+                    <button class="admin-button" onclick="resetSessionStats()" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); margin-top: 8px;">
+                        🔄 Reset Session
+                    </button>
+                </div>
+            </div>
+
+            <!-- SETTINGS TAB -->
+            <div id="settings" class="admin-tab-content">
+                <div class="admin-section">
+                    <h3>⚙️ Trading Parameters</h3>
+                    <div class="admin-input-group">
+                        <div class="admin-input">
+                            <label>Risk Per Trade (%)</label>
+                            <input type="number" id="adminRiskInput" min="0.1" max="10" step="0.1" value="2">
+                        </div>
+                        <div class="admin-input">
+                            <label>Trade Multiplier</label>
+                            <input type="number" id="adminMultiplierInput" min="1" max="50" value="0.85">
+                        </div>
+                    </div>
+                    <button class="admin-button" onclick="updateTradingParams()">💾 Save</button>
+                </div>
+
+                <div class="admin-section">
+                    <h3>📊 Thresholds</h3>
+                    <div class="admin-input-group">
+                        <div class="admin-input">
+                            <label>Loss Threshold (%)</label>
+                            <input type="number" id="adminLossInput" min="1" max="50" value="20">
+                        </div>
+                        <div class="admin-input">
+                            <label>Profit Threshold (%)</label>
+                            <input type="number" id="adminProfitInput" min="1" max="50" value="10">
+                        </div>
+                    </div>
+                    <button class="admin-button" onclick="updateThresholds()">💾 Save</button>
+                </div>
+            </div>
+
+            <!-- DANGER ZONE TAB -->
+            <div id="danger" class="admin-tab-content">
+                <div class="danger-zone">
+                    <h4>⚠️ DANGER ZONE</h4>
+                    <p style="color: #cbd5e1; font-size: 11px; margin-bottom: 12px;">
+                        These actions cannot be undone!
+                    </p>
+                    
+                    <button class="admin-button danger-button" onclick="clearAllData()">
+                        🗑️ Clear All Data
+                    </button>
+                    <button class="admin-button danger-button" onclick="resetAllSettings()" style="margin-top: 8px;">
+                        🔄 Reset All Settings
+                    </button>
+                </div>
+            </div>
+
+            <!-- LOGOUT -->
+            <div class="admin-section" style="margin-top: 30px; padding-bottom: 30px;">
+                <button class="admin-button" onclick="logoutAdmin()" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);">
+                    🚪 Logout Admin
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT MODAL -->
+    <div class="modal" id="resultModal">
+        <div class="modal-content">
+            <h2>🎉 Trade Result</h2>
+            <div class="result-display" id="resultDisplay"></div>
+            <div class="countdown" id="modalCountdown"></div>
+            <div class="result-info" id="resultInfo"></div>
+            <div class="result-buttons">
+                <button class="btn-win" onclick="recordResult('win')">✓ WIN</button>
+                <button class="btn-loss" onclick="recordResult('loss')">✗ LOSS</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOBILE NAVIGATION -->
+    <div class="mobile-nav" id="mobileNav">
+        <button class="nav-item active" onclick="switchDashboardView('dashboard')">
+            <div class="nav-icon">📊</div>
+            <div>Dashboard</div>
+        </button>
+        <button class="nav-item" onclick="switchDashboardView('trade')">
+            <div class="nav-icon">🎯</div>
+            <div>Trade</div>
+        </button>
+        <button class="nav-item" onclick="switchDashboardView('history')">
+            <div class="nav-icon">📈</div>
+            <div>History</div>
+        </button>
+        <button class="nav-item" onclick="openAdminLogin()">
+            <div class="nav-icon">⚙️</div>
+            <div>Admin</div>
+        </button>
+    </div>
+
+    <script>
+        let appState = {
+            user: null,
+            setup: null,
+            balance: 0,
+            initialBalance: 0,
+            trades: [],
+            sessionTrades: [],
+            currentTrade: null,
+            tradeInProgress: false,
+            blockedUntil: null,
+            blockReason: null,
+            countdownInterval: null,
+            sessionStartBalance: 0,
+            blockSystemEnabled: true,
+            lossBlockMinutes: 180,
+            profitBlockMinutes: 120,
+            adminLoggedIn: false,
+            adminLoginTime: null,
+            currentView: 'dashboard'
+        };
+
+        const DEMO_USERS = {
+            'demo@quotex.com': 'Demo@123'
+        };
+
+        const ADMIN_USERS = {
+            'admin': 'Admin@123'
+        };
+
+        const SIGNAL_DATA = {
+            markets: [
+                { name: 'USD/MXN', emoji: '🇲🇽' },
+                { name: 'USD/BRL', emoji: '🇧🇷' },
+                { name: 'EUR/USD', emoji: '🇪🇺' },
+                { name: 'GBP/USD', emoji: '🇬🇧' }
+            ]
+        };
+
+        function showNotification(message) {
+            const notif = document.createElement('div');
+            notif.className = 'notification';
+            notif.textContent = message;
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 4000);
+        }
+
+        function switchAdminTab(tabName) {
+            document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.admin-tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        function switchDashboardView(view) {
+            appState.currentView = view;
+            const dashboard = document.getElementById('dashboardSection');
+            
+            dashboard.classList.remove('show-dashboard', 'show-trade', 'show-history');
+            dashboard.classList.add('show-' + view);
+
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+
+            if (view === 'history') {
+                updateTradeHistory();
+            }
+        }
+
+        function init() {
+            loadFromLocalStorage();
+            if (appState.user && appState.setup) {
+                showDashboard();
+            } else if (appState.user && !appState.setup) {
+                showSetup();
+            } else {
+                showLogin();
+            }
+        }
+
+        function handleLogin() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorDiv = document.getElementById('loginError');
+
+            errorDiv.classList.remove('show');
+
+            if (!email || !password) {
+                errorDiv.textContent = '❌ Enter email and password';
+                errorDiv.classList.add('show');
+                return;
+            }
+
+            if (DEMO_USERS[email] && DEMO_USERS[email] === password) {
+                appState.user = {
+                    email: email,
+                    name: email.split('@')[0],
+                    loginTime: new Date()
+                };
+                saveToLocalStorage();
+                showSetup();
+            } else {
+                errorDiv.textContent = '❌ Invalid credentials';
+                errorDiv.classList.add('show');
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('setupWizard').classList.remove('active');
+            document.getElementById('dashboardSection').classList.remove('active');
+        }
+
+        function showSetup() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('setupWizard').classList.add('active');
+            document.getElementById('dashboardSection').classList.remove('active');
+        }
+
+        function showDashboard() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('setupWizard').classList.remove('active');
+            document.getElementById('dashboardSection').classList.add('active');
+            document.getElementById('dashboardSection').classList.add('show-dashboard');
+            updateDashboard();
+        }
+
+        function completeSetup() {
+            const initialBalance = parseFloat(document.getElementById('initialBalance').value);
+            if (!initialBalance || initialBalance <= 0) {
+                alert('❌ Enter valid balance');
+                return;
+            }
+
+            appState.setup = {
+                initialBalance: initialBalance,
+                riskPercent: parseFloat(document.getElementById('riskPercent').value),
+                tradeMultiplier: parseFloat(document.getElementById('tradeMultiplier').value),
+                lossThreshold: parseFloat(document.getElementById('lossThreshold').value),
+                profitThreshold: parseFloat(document.getElementById('profitThreshold').value)
+            };
+
+            if (appState.trades.length === 0) {
+                appState.balance = initialBalance;
+                appState.initialBalance = initialBalance;
+            }
+
+            appState.sessionStartBalance = appState.balance;
+            appState.sessionTrades = [];
+            saveToLocalStorage();
+            showDashboard();
+        }
+
+        function updateDashboard() {
+            if (!appState.user || !appState.setup) return;
+
+            document.getElementById('userName').textContent = `Welcome, ${appState.user.name}`;
+            document.getElementById('userEmail').textContent = appState.user.email;
+            document.getElementById('balanceAmount').textContent = `$${appState.balance.toFixed(2)}`;
+
+            checkBlockStatus();
+            updateStats();
+        }
+
+        function checkBlockStatus() {
+            const now = new Date();
+            if (appState.blockedUntil && now < appState.blockedUntil) {
+                const timeLeft = Math.ceil((appState.blockedUntil - now) / (1000 * 60));
+                document.getElementById('tradingStatus').textContent = '🔴 BLOCKED';
+                document.getElementById('blockInfo').textContent = `${timeLeft}m left`;
+                document.getElementById('generateBtn').disabled = true;
+            } else if (appState.blockedUntil && now >= appState.blockedUntil) {
+                appState.blockedUntil = null;
+                appState.blockReason = null;
+                document.getElementById('tradingStatus').textContent = '🟢 ACTIVE';
+                document.getElementById('blockInfo').textContent = 'None';
+                document.getElementById('generateBtn').disabled = false;
+                showNotification('✅ Block ended!');
+            } else {
+                document.getElementById('tradingStatus').textContent = '🟢 ACTIVE';
+                document.getElementById('blockInfo').textContent = 'None';
+                document.getElementById('generateBtn').disabled = false;
+            }
+        }
+
+        function generateSignal() {
+            if (appState.tradeInProgress) {
+                alert('⏳ Wait for current trade');
+                return;
+            }
+
+            checkBlockStatus();
+            if (appState.blockedUntil) {
+                alert(`❌ ${appState.blockReason}`);
+                return;
+            }
+
+            const market = SIGNAL_DATA.markets[Math.floor(Math.random() * SIGNAL_DATA.markets.length)];
+            const signals = ['BUY', 'SELL'];
+            const signal = signals[Math.floor(Math.random() * signals.length)];
+            const riskAmount = appState.balance * (appState.setup.riskPercent / 100);
+            const tradeAmount = riskAmount * appState.setup.tradeMultiplier;
+
+            // Entry Time = পরবর্তী মিনিটের শুরু (00 সেকেন্ড)
+            const now = new Date();
+            const entryTime = new Date(now);
+            entryTime.setSeconds(0, 0); // সেকেন্ড এবং মিলিসেকেন্ড = 0
+            entryTime.setMinutes(entryTime.getMinutes() + 1); // পরবর্তী মিনিট
+
+            appState.currentTrade = {
+                id: Date.now(),
+                timestamp: new Date(),
+                entryTime: entryTime,
+                market: market.name,
+                marketEmoji: market.emoji,
+                signal: signal,
+                tradeAmount: tradeAmount.toFixed(2),
+                riskAmount: riskAmount.toFixed(2),
+                entryPrice: (Math.random() * 100 + 50).toFixed(4),
+                result: null
+            };
+
+            appState.tradeInProgress = true;
+
+            document.getElementById('signalDisplay').textContent = signal;
+            document.getElementById('signalDisplay').className = `signal-display ${signal === 'BUY' ? 'buy' : 'sell'}`;
+            document.getElementById('marketBadge').textContent = `${market.emoji} ${market.name}`;
+            document.getElementById('entryPrice').textContent = appState.currentTrade.entryPrice;
+            document.getElementById('tradeAmount').textContent = `$${tradeAmount.toFixed(2)}`;
+            document.getElementById('riskAmount').textContent = `$${riskAmount.toFixed(2)}`;
+            
+            // Entry Time দেখাও
+            document.getElementById('entryTime').textContent = `Entry Time: ${entryTime.toLocaleTimeString()}`;
+
+            document.getElementById('signalCard').classList.add('active');
+            document.getElementById('generateBtn').disabled = true;
+
+            startCountdown();
+        }
+
+        function startCountdown() {
+            if (appState.countdownInterval) clearInterval(appState.countdownInterval);
+
+            const entryTime = appState.currentTrade.entryTime;
+            const resultShowTime = new Date(entryTime.getTime() + 2 * 60 * 1000); // Entry Time + 2 মিনিট
+
+            const countdownElement = document.getElementById('countdown');
+
+            const updateCountdown = () => {
+                const now = new Date();
+                
+                if (now < entryTime) {
+                    // Entry Time এর আগে
+                    const timeUntilEntry = Math.ceil((entryTime - now) / 1000);
+                    const minutes = Math.floor(timeUntilEntry / 60);
+                    const seconds = timeUntilEntry % 60;
+                    countdownElement.textContent = `⏱️ Entry in ${minutes}:${seconds.toString().padStart(2, '0')}`;
+                } else if (now < resultShowTime) {
+                    // Entry Time থেকে Result Show Time এর মধ্যে
+                    const timeUntilResult = Math.ceil((resultShowTime - now) / 1000);
+                    const minutes = Math.floor(timeUntilResult / 60);
+                    const seconds = timeUntilResult % 60;
+                    countdownElement.textContent = `⏱️ Result in ${minutes}:${seconds.toString().padStart(2, '0')}`;
+                } else {
+                    // Result দেখানোর সময় হয়েছে
+                    clearInterval(appState.countdownInterval);
+                    showResultPopup();
+                    return;
+                }
+            };
+
+            // প্রথমবার আপডেট করো
+            updateCountdown();
+
+            // প্রতি সেকেন্ডে আপডেট করো
+            appState.countdownInterval = setInterval(updateCountdown, 1000);
+        }
+
+        function showResultPopup() {
+            const results = ['win', 'loss'];
+            const randomResult = results[Math.floor(Math.random() * results.length)];
+
+            document.getElementById('resultDisplay').textContent = randomResult === 'win' ? '✓ WIN' : '✗ LOSS';
+            document.getElementById('resultDisplay').className = `result-display ${randomResult}`;
+
+            const tradeAmount = parseFloat(appState.currentTrade.tradeAmount);
+            const riskAmount = parseFloat(appState.currentTrade.riskAmount);
+            const pnl = randomResult === 'win' ? tradeAmount * 0.85 : -riskAmount;
+
+            document.getElementById('resultInfo').innerHTML = `
+                <p><strong>Market:</strong> <span>${appState.currentTrade.market}</span></p>
+                <p><strong>Signal:</strong> <span>${appState.currentTrade.signal}</span></p>
+                <p><strong>P&L:</strong> <span style="color: ${pnl > 0 ? '#22c55e' : '#ef4444'};">$${pnl.toFixed(2)}</span></p>
+            `;
+
+            document.getElementById('resultModal').classList.add('active');
+        }
+
+        function recordResult(result) {
+            if (!appState.currentTrade) return;
+
+            const tradeAmount = parseFloat(appState.currentTrade.tradeAmount);
+            const riskAmount = parseFloat(appState.currentTrade.riskAmount);
+            let pnl = result === 'win' ? tradeAmount * 0.85 : -riskAmount;
+
+            appState.balance += pnl;
+            appState.currentTrade.result = result;
+            appState.currentTrade.pnl = pnl;
+            appState.sessionTrades.push({...appState.currentTrade});
+            appState.trades.push({...appState.currentTrade});
+
+            checkMoneyManagementRules();
+
+            appState.currentTrade = null;
+            appState.tradeInProgress = false;
+
+            updateDashboard();
+            saveToLocalStorage();
+
+            document.getElementById('resultModal').classList.remove('active');
+            document.getElementById('signalCard').classList.remove('active');
+            document.getElementById('generateBtn').disabled = false;
+
+            showNotification(`${result.toUpperCase()}: $${pnl.toFixed(2)}`);
+        }
+
+        function checkMoneyManagementRules() {
+            if (!appState.blockSystemEnabled) return;
+
+            const balanceChange = appState.balance - appState.sessionStartBalance;
+            const profitPercent = (balanceChange / appState.sessionStartBalance) * 100;
+
+            if (profitPercent >= appState.setup.profitThreshold) {
+                blockTrading('Profit reached', appState.profitBlockMinutes);
+            }
+
+            const lossPercent = ((appState.sessionStartBalance - appState.balance) / appState.sessionStartBalance) * 100;
+
+            if (lossPercent >= appState.setup.lossThreshold) {
+                blockTrading('Loss limit', appState.lossBlockMinutes);
+            }
+        }
+
+        function blockTrading(reason, minutes) {
+            const blockTime = new Date();
+            blockTime.setMinutes(blockTime.getMinutes() + minutes);
+
+            appState.blockedUntil = blockTime;
+            appState.blockReason = reason;
+            showNotification(`⛔ ${reason}!`);
+        }
+
+        function updateStats() {
+            const totalTrades = appState.sessionTrades.filter(t => t.result).length;
+            const wins = appState.sessionTrades.filter(t => t.result === 'win').length;
+            const winRate = totalTrades > 0 ? ((wins / totalTrades) * 100).toFixed(1) : 0;
+            const sessionPnL = appState.sessionTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+
+            document.getElementById('totalTrades').textContent = totalTrades;
+            document.getElementById('winRate').textContent = `${winRate}%`;
+            document.getElementById('sessionPnL').textContent = `$${sessionPnL.toFixed(2)}`;
+
+            const pnlCard = document.getElementById('pnlCard');
+            if (sessionPnL < 0) {
+                pnlCard.classList.add('negative');
+            } else {
+                pnlCard.classList.remove('negative');
+            }
+
+            // Update admin overview
+            if (appState.adminLoggedIn) {
+                document.getElementById('adminTotalTrades').textContent = totalTrades;
+                document.getElementById('adminWinRate').textContent = `${winRate}%`;
+                document.getElementById('adminSessionPnL').textContent = `$${sessionPnL.toFixed(2)}`;
+                document.getElementById('adminBalance').textContent = `$${appState.balance.toFixed(2)}`;
+            }
+        }
+
+        function updateTradeHistory() {
+            const tbody = document.getElementById('tradesBody');
+            const table = document.getElementById('tradesTable');
+            const noTradesMsg = document.getElementById('noTradesMsg');
+
+            if (appState.sessionTrades.length === 0) {
+                table.style.display = 'none';
+                noTradesMsg.style.display = 'block';
+                return;
+            }
+
+            table.style.display = 'table';
+            noTradesMsg.style.display = 'none';
+
+            tbody.innerHTML = appState.sessionTrades.map(trade => {
+                const time = new Date(trade.timestamp).toLocaleTimeString();
+                return `
+                    <tr>
+                        <td>${time.slice(0, 5)}</td>
+                        <td>${trade.marketEmoji}</td>
+                        <td>${trade.signal === 'BUY' ? '🟢' : '🔴'}</td>
+                        <td>${trade.result === 'win' ? '✓' : '✗'}</td>
+                        <td style="color: ${trade.pnl > 0 ? '#22c55e' : '#ef4444'};">$${trade.pnl?.toFixed(2)}</td>
+                    </tr>
+                `;
+            }).reverse().join('');
+        }
+
+        function handleLogout() {
+            if (confirm('Logout?')) {
+                const savedTrades = appState.trades;
+                const savedBalance = appState.balance;
+                
+                appState = {
+                    user: null,
+                    setup: null,
+                    balance: 0,
+                    initialBalance: 0,
+                    trades: savedTrades,
+                    sessionTrades: [],
+                    currentTrade: null,
+                    tradeInProgress: false,
+                    blockedUntil: null,
+                    blockReason: null,
+                    countdownInterval: null,
+                    sessionStartBalance: 0,
+                    blockSystemEnabled: true,
+                    lossBlockMinutes: 180,
+                    profitBlockMinutes: 120,
+                    adminLoggedIn: false,
+                    adminLoginTime: null,
+                    currentView: 'dashboard'
+                };
+                appState.balance = savedBalance;
+                appState.trades = savedTrades;
+                
+                saveToLocalStorage();
+                showLogin();
+            }
+        }
+
+        function openAdminLogin() {
+            document.getElementById('adminLoginModal').classList.add('active');
+        }
+
+        function closeAdminLogin() {
+            document.getElementById('adminLoginModal').classList.remove('active');
+        }
+
+        function verifyAdminCredentials() {
+            const username = document.getElementById('adminUsername').value.trim();
+            const password = document.getElementById('adminPassword').value.trim();
+            const errorDiv = document.getElementById('adminLoginError');
+
+            errorDiv.classList.remove('show');
+
+            if (!username || !password) {
+                errorDiv.textContent = '❌ Enter credentials';
+                errorDiv.classList.add('show');
+                return;
+            }
+
+            if (ADMIN_USERS[username] && ADMIN_USERS[username] === password) {
+                appState.adminLoggedIn = true;
+                appState.adminLoginTime = new Date();
+                closeAdminLogin();
+                openAdminPanel();
+                showNotification('✅ Admin login!');
+            } else {
+                errorDiv.textContent = '❌ Invalid credentials';
+                errorDiv.classList.add('show');
+            }
+        }
+
+        function openAdminPanel() {
+            if (!appState.adminLoggedIn) {
+                openAdminLogin();
+                return;
+            }
+            document.getElementById('adminModal').classList.add('active');
+            updateAdminPanel();
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminModal').classList.remove('active');
+        }
+
+        function updateAdminPanel() {
+            const toggle = document.getElementById('blockSystemToggle');
+            if (appState.blockSystemEnabled) {
+                toggle.classList.add('active');
+                document.getElementById('blockSystemStatus').textContent = '🟢 ENABLED';
+            } else {
+                toggle.classList.remove('active');
+                document.getElementById('blockSystemStatus').textContent = '🔴 DISABLED';
+            }
+
+            document.getElementById('lossBlockMinutes').value = appState.lossBlockMinutes;
+            document.getElementById('profitBlockMinutes').value = appState.profitBlockMinutes;
+
+            // Update overview stats
+            document.getElementById('adminRiskPercent').textContent = appState.setup.riskPercent + '%';
+            document.getElementById('adminMultiplier').textContent = appState.setup.tradeMultiplier + 'x';
+            document.getElementById('adminLossThreshold').textContent = appState.setup.lossThreshold + '%';
+            document.getElementById('adminProfitThreshold').textContent = appState.setup.profitThreshold + '%';
+
+            // Update settings inputs
+            document.getElementById('adminRiskInput').value = appState.setup.riskPercent;
+            document.getElementById('adminMultiplierInput').value = appState.setup.tradeMultiplier;
+            document.getElementById('adminLossInput').value = appState.setup.lossThreshold;
+            document.getElementById('adminProfitInput').value = appState.setup.profitThreshold;
+
+            if (appState.blockedUntil) {
+                const now = new Date();
+                if (now < appState.blockedUntil) {
+                    document.getElementById('blockStatusInfo').textContent = '🔴 BLOCKED';
+                    document.getElementById('blockedUntilInfo').textContent = appState.blockedUntil.toLocaleTimeString();
+                    document.getElementById('blockReasonInfo').textContent = appState.blockReason;
+                    const timeLeft = Math.ceil((appState.blockedUntil - now) / (1000 * 60));
+                    document.getElementById('timeRemainingInfo').textContent = `${timeLeft} minutes`;
+                } else {
+                    document.getElementById('blockStatusInfo').textContent = '✅ Not Blocked';
+                    document.getElementById('blockedUntilInfo').textContent = '-';
+                    document.getElementById('blockReasonInfo').textContent = '-';
+                    document.getElementById('timeRemainingInfo').textContent = '-';
+                }
+            } else {
+                document.getElementById('blockStatusInfo').textContent = '✅ Not Blocked';
+                document.getElementById('blockedUntilInfo').textContent = '-';
+                document.getElementById('blockReasonInfo').textContent = '-';
+                document.getElementById('timeRemainingInfo').textContent = '-';
+            }
+
+            updateStats();
+        }
+
+        function toggleBlockSystem() {
+            appState.blockSystemEnabled = !appState.blockSystemEnabled;
+            updateAdminPanel();
+            saveToLocalStorage();
+            showNotification(`Block System ${appState.blockSystemEnabled ? '🟢 ON' : '🔴 OFF'}`);
+        }
+
+        function updateBlockTimes() {
+            const lossMinutes = parseInt(document.getElementById('lossBlockMinutes').value);
+            const profitMinutes = parseInt(document.getElementById('profitBlockMinutes').value);
+
+            if (lossMinutes < 1 || profitMinutes < 1) {
+                alert('❌ Minimum 1 minute');
+                return;
+            }
+
+            appState.lossBlockMinutes = lossMinutes;
+            appState.profitBlockMinutes = profitMinutes;
+
+            saveToLocalStorage();
+            updateAdminPanel();
+            showNotification(`✅ Block times updated!`);
+        }
+
+        function removeAllBlocks() {
+            if (confirm('Remove all blocks?')) {
+                appState.blockedUntil = null;
+                appState.blockReason = null;
+                updateAdminPanel();
+                saveToLocalStorage();
+                showNotification('✅ Blocks removed!');
+            }
+        }
+
+        function resetSessionStats() {
+            if (confirm('Reset session stats?')) {
+                appState.sessionTrades = [];
+                appState.sessionStartBalance = appState.balance;
+                updateDashboard();
+                updateAdminPanel();
+                saveToLocalStorage();
+                showNotification('✅ Session reset!');
+            }
+        }
+
+        function updateTradingParams() {
+            const risk = parseFloat(document.getElementById('adminRiskInput').value);
+            const multiplier = parseFloat(document.getElementById('adminMultiplierInput').value);
+
+            if (risk < 0.1 || multiplier < 1) {
+                alert('❌ Invalid values');
+                return;
+            }
+
+            appState.setup.riskPercent = risk;
+            appState.setup.tradeMultiplier = multiplier;
+
+            saveToLocalStorage();
+            updateAdminPanel();
+            showNotification('✅ Parameters saved!');
+        }
+
+        function updateThresholds() {
+            const loss = parseFloat(document.getElementById('adminLossInput').value);
+            const profit = parseFloat(document.getElementById('adminProfitInput').value);
+
+            if (loss < 1 || profit < 1) {
+                alert('❌ Invalid values');
+                return;
+            }
+
+            appState.setup.lossThreshold = loss;
+            appState.setup.profitThreshold = profit;
+
+            saveToLocalStorage();
+            updateAdminPanel();
+            showNotification('✅ Thresholds saved!');
+        }
+
+        function resetAllSettings() {
+            if (confirm('Reset all settings to default?')) {
+                if (confirm('This action cannot be undone!')) {
+                    appState.setup.riskPercent = 2;
+                    appState.setup.tradeMultiplier = 0.85;
+                    appState.setup.lossThreshold = 20;
+                    appState.setup.profitThreshold = 10;
+                    appState.blockSystemEnabled = true;
+                    appState.lossBlockMinutes = 180;
+                    appState.profitBlockMinutes = 120;
+
+                    saveToLocalStorage();
+                    updateAdminPanel();
+                    showNotification('✅ Settings reset!');
+                }
+            }
+        }
+
+        function clearAllData() {
+            if (confirm('Clear ALL data?')) {
+                if (confirm('⚠️ This includes all trades and stats!')) {
+                    localStorage.removeItem('quotexAppState');
+                    showNotification('✅ All data cleared');
+                    setTimeout(() => location.reload(), 1000);
+                }
+            }
+        }
+
+        function logoutAdmin() {
+            appState.adminLoggedIn = false;
+            appState.adminLoginTime = null;
+            closeAdminPanel();
+            saveToLocalStorage();
+            showNotification('✓ Admin logout');
+        }
+
+        function saveToLocalStorage() {
+            const stateToSave = { ...appState };
+            localStorage.setItem('quotexAppState', JSON.stringify(stateToSave));
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('quotexAppState');
+            if (saved) {
+                try {
+                    const loaded = JSON.parse(saved);
+                    appState = {...appState, ...loaded};
+                    if (appState.blockedUntil) {
+                        appState.blockedUntil = new Date(appState.blockedUntil);
+                    }
+                    if (appState.adminLoginTime) {
+                        appState.adminLoginTime = new Date(appState.adminLoginTime);
+                    }
+                    if (appState.currentTrade && appState.currentTrade.entryTime) {
+                        appState.currentTrade.entryTime = new Date(appState.currentTrade.entryTime);
+                    }
+                } catch (e) {
+                    console.log('Error loading state:', e);
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            init();
+        });
+
+        setInterval(() => {
+            if (appState.user && appState.setup) {
+                checkBlockStatus();
+            }
+        }, 30000);
+
+        document.getElementById('adminLoginModal').addEventListener('click', function(e) {
+            if (e.target === this) closeAdminLogin();
+        });
+
+        document.getElementById('adminModal').addEventListener('click', function(e) {
+            if (e.target === this) closeAdminPanel();
+        });
+    </script>
 </body>
 </html>
